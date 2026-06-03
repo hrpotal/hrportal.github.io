@@ -1,0 +1,102 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --stirling-green: 152 100% 21%;
+    --stirling-green-dark: 152 100% 18%;
+    --stirling-green-light: 152 47% 93%;
+    --stirling-green-hover: 152 47% 97%;
+
+    --background: 220 14% 97%;
+    --foreground: 220 13% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 18%;
+    --primary: 152 100% 21%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 13% 18%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 152 47% 93%;
+    --accent-foreground: 152 100% 21%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 152 100% 21%;
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 9% 46%;
+    --sidebar-primary: 152 100% 21%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 152 47% 97%;
+    --sidebar-accent-foreground: 152 100% 21%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 152 100% 21%;
+
+    --success: 160 84% 39%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
+    --info: 217 91% 60%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .text-stirling {
+    color: hsl(var(--stirling-green));
+  }
+  .bg-stirling {
+    background-color: hsl(var(--stirling-green));
+  }
+  .bg-stirling-dark {
+    background-color: hsl(var(--stirling-green-dark));
+  }
+  .bg-stirling-light {
+    background-color: hsl(var(--stirling-green-light));
+  }
+  .bg-stirling-hover {
+    background-color: hsl(var(--stirling-green-hover));
+  }
+  .border-stirling {
+    border-color: hsl(var(--stirling-green));
+  }
+}
+
+@layer base {
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+}
