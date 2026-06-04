@@ -1,9 +1,22 @@
 import { Search, Bell, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import logo from '../assets/image.png';
+import { useAppState } from '../context/AppStateContext';
 
 export default function TopBar() {
   const [showDropdown, setShowDropdown] = useState(false);
+  const { state, logout } = useAppState();
+
+  const currentUser = state.users.find(u => u.id === state.session?.userId);
+  const name = currentUser ? currentUser.name : 'User';
+  const roleDisplay = currentUser ? (currentUser.position || (currentUser.role === 'hr' ? 'HR Director' : 'Staff')) : '';
+  const initials = name.split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+  const handleLogoutClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    logout();
+    window.location.hash = '#/';
+  };
 
   return (
     <header className="h-16 bg-white border-b border-[#e5e7eb] flex items-center justify-between px-6 sticky top-0 z-40">
@@ -44,11 +57,11 @@ export default function TopBar() {
           className="flex items-center gap-2 hover:bg-[#f7f8fa] rounded-lg px-2 py-1.5 transition-colors"
         >
           <div className="w-8 h-8 rounded-full bg-[#006938] text-white flex items-center justify-center text-xs font-semibold">
-            SM
+            {initials}
           </div>
           <div className="text-left hidden lg:block">
-            <p className="text-sm font-medium text-[#1f2937] leading-tight">Dr. Sarah Mitchell</p>
-            <p className="text-xs text-[#6b7280] leading-tight">HR Director</p>
+            <p className="text-sm font-medium text-[#1f2937] leading-tight">{name}</p>
+            <p className="text-xs text-[#6b7280] leading-tight">{roleDisplay}</p>
           </div>
           <ChevronDown className="w-4 h-4 text-[#6b7280]" />
         </button>
@@ -62,7 +75,7 @@ export default function TopBar() {
               Preferences
             </a>
             <div className="border-t border-[#e5e7eb] my-1" />
-            <a href="#/" className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+            <a href="#/" onClick={handleLogoutClick} className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
               Logout
             </a>
           </div>

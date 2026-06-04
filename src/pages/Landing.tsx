@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import logo from '../assets/image.png';
+import { useAppState } from '../context/AppStateContext';
 
 export default function Landing() {
   const [activeTab, setActiveTab] = useState<'staff' | 'manager'>('staff');
@@ -8,6 +9,8 @@ export default function Landing() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState('');
+  const { login } = useAppState();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
@@ -16,12 +19,31 @@ export default function Landing() {
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
-    window.location.hash = '#/dashboard';
+    setError('');
+    
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter both email and password.');
+      return;
+    }
+    
+    const success = login(email, password);
+    if (success) {
+      window.location.hash = '#/dashboard';
+    } else {
+      setError('Incorrect email/username or password. Please try again.');
+    }
   };
 
   const handleMicrosoftSSO = () => {
-    window.location.hash = '#/dashboard';
+    setError('');
+    // Automatically log in as appropriate user based on active tab for SSO convenience
+    const defaultUser = activeTab === 'staff' ? 'staff1' : 'hr';
+    const success = login(defaultUser, '1234');
+    if (success) {
+      window.location.hash = '#/dashboard';
+    }
   };
+
 
   const stats = [
     { value: '1,248', label: 'Active Employees' },
@@ -113,12 +135,19 @@ export default function Landing() {
               </button>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 text-red-600 text-xs rounded-lg border border-red-200">
+                {error}
+              </div>
+            )}
+
             {/* Form */}
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-[#1f2937] mb-1">University Email</label>
                 <input
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={activeTab === 'staff' ? 'abc1@stir.ac.uk' : 'manager@stir.ac.uk'}

@@ -6,6 +6,7 @@ import {
   Award, MessageCircle, Settings, FileBarChart, ScrollText,
   LogOut, ChevronLeft, ChevronRight
 } from 'lucide-react';
+import { useAppState } from '../context/AppStateContext';
 
 interface NavItem {
   label: string;
@@ -84,11 +85,38 @@ interface SidebarProps {
 
 export default function Sidebar({ currentPath }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const { state, logout } = useAppState();
+  const role = state.session?.role;
 
   const isActive = (href: string) => {
     const path = href.replace('#', '');
     return currentPath === path || currentPath.startsWith(path + '/');
   };
+
+  const handleLogoutClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    logout();
+    window.location.hash = '#/';
+  };
+
+  const filteredNavGroups = navGroups.map(group => {
+    if (role === 'hr') return group;
+    
+    // For staff, filter items
+    const allowedItems = group.items.filter(item => {
+      const href = item.href;
+      return (
+        href === '#/dashboard' ||
+        href === '#/profile' ||
+        href === '#/attendance' ||
+        href === '#/attendance/leave' ||
+        href === '#/payroll/payslips' ||
+        href === '#/settings'
+      );
+    });
+
+    return { ...group, items: allowedItems };
+  }).filter(group => group.items.length > 0);
 
   return (
     <aside
@@ -105,7 +133,7 @@ export default function Sidebar({ currentPath }: SidebarProps) {
       </button>
 
       <nav className="flex-1 overflow-y-auto py-4">
-        {navGroups.map((group) => (
+        {filteredNavGroups.map((group) => (
           <div key={group.label} className="mb-2">
             {!collapsed && (
               <div className="px-5 py-2 text-[11px] font-semibold uppercase tracking-wider text-[#9ca3af]">
@@ -140,6 +168,7 @@ export default function Sidebar({ currentPath }: SidebarProps) {
       <div className="p-4 border-t border-[#e5e7eb]">
         <a
           href="#/"
+          onClick={handleLogoutClick}
           className={`flex items-center gap-3 px-5 py-2.5 rounded-lg text-sm font-medium text-[#6b7280] hover:bg-red-50 hover:text-red-600 transition-all ${
             collapsed ? 'justify-center px-2' : ''
           }`}
